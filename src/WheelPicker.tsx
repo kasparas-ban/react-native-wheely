@@ -129,7 +129,6 @@ const WheelPicker: React.FC<Props> = ({
         ]}
       />
       <Animated.FlatList<string | null>
-        {...flatListProps}
         ref={flatListRef}
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -163,6 +162,7 @@ const WheelPicker: React.FC<Props> = ({
             visibleRest={visibleRest}
           />
         )}
+        {...flatListProps}
       />
     </View>
   );
