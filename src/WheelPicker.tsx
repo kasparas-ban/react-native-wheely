@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { ComponentType, MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 import {
   StyleProp,
   TextStyle,
@@ -30,6 +30,7 @@ interface Props {
   visibleRest?: number;
   decelerationRate?: 'normal' | 'fast' | number;
   flatListProps?: Omit<FlatListProps<string | null>, 'data' | 'renderItem'>;
+  flatListComponent?: ComponentType<FlatListProps<string | null> | { ref: MutableRefObject<any> }>
 }
 
 const WheelPicker: React.FC<Props> = ({
@@ -48,8 +49,9 @@ const WheelPicker: React.FC<Props> = ({
   decelerationRate = 'fast',
   containerProps = {},
   flatListProps = {},
+  flatListComponent = null
 }) => {
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<any>(null);
   const [scrollY] = useState(new Animated.Value(0));
 
   const containerHeight = (1 + visibleRest * 2) * itemHeight;
@@ -113,6 +115,8 @@ const WheelPicker: React.FC<Props> = ({
     });
   }, [selectedIndex]);
 
+  const CustomFlatList = flatListComponent || Animated.FlatList<string | null>
+
   return (
     <View
       style={[styles.container, { height: containerHeight }, containerStyle]}
@@ -128,7 +132,7 @@ const WheelPicker: React.FC<Props> = ({
           },
         ]}
       />
-      <Animated.FlatList<string | null>
+      <CustomFlatList
         ref={flatListRef}
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
